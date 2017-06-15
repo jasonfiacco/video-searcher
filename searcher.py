@@ -1,11 +1,13 @@
-import re
 import requests
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 from lxml import html
 from bs4 import BeautifulSoup
 import time
-from browsermobproxy import Server
 
 def extract_transcript(html_page):
     caption_tags = html_page.find_all('div', class_='caption-line-text')
@@ -32,35 +34,53 @@ if __name__ == '__main__':
     browser.get(url)
     time.sleep(2)
 
-    more_button = browser.find_element_by_id('action-panel-overflow-button')
+    more_button = WebDriverWait(browser, 6).until(
+        EC.presence_of_element_located((By.ID, 'action-panel-overflow-button'))
+    )
     actions = ActionChains(browser)
     actions.move_to_element(more_button)
-    time.sleep(2)
+    WebDriverWait(browser, 6).until(
+        EC.element_to_be_clickable((By.ID, 'action-panel-overflow-button'))
+    )
     actions.click(more_button)
     actions.perform()
 
-    transcript_button = browser.find_element_by_xpath('//*[@id="action-panel-overflow-menu"]/li[2]/button')
+    transcript_button = WebDriverWait(browser, 6).until(
+        EC.presence_of_element_located((By.XPATH, '//*[@id="action-panel-overflow-menu"]/li[2]/button'))
+    )
     actions = ActionChains(browser)
     actions.move_to_element(transcript_button)
-    time.sleep(2)
+    WebDriverWait(browser, 6).until(
+        EC.element_to_be_clickable((By.XPATH, '//*[@id="action-panel-overflow-menu"]/li[2]/button'))
+    )
     actions.click(transcript_button)
     actions.perform()
 
-    english_button = browser.find_element_by_xpath('//*[@id="watch-transcript-container"]/div[2]/div[1]/button')
+    english_button = WebDriverWait(browser, 6).until(
+        EC.presence_of_element_located((By.XPATH, '//*[@id="watch-transcript-container"]/div[2]/div[1]/button'))
+    )
     actions = ActionChains(browser)
     actions.move_to_element(english_button)
-    time.sleep(2)
+    WebDriverWait(browser, 6).until(
+        EC.element_to_be_clickable((By.XPATH, '//*[@id="watch-transcript-container"]/div[2]/div[1]/button'))
+    )
     actions.click(english_button)
     actions.perform()
 
-    english_button2 = browser.find_element_by_xpath('//*[@id="aria-menu-id-7"]/button')
+    english_button2 = WebDriverWait(browser, 6).until(
+        EC.presence_of_element_located((By.XPATH, '//*[@id="aria-menu-id-7"]/button'))
+    )
     actions = ActionChains(browser)
     actions.move_to_element(english_button2)
-    time.sleep(2)
+    WebDriverWait(browser, 6).until(
+        EC.element_to_be_clickable((By.XPATH, '//*[@id="aria-menu-id-7"]/button'))
+    )
     actions.click(english_button2)
     actions.perform()
 
-    time.sleep(2)
+    WebDriverWait(browser, 6).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, 'caption-line-text'))
+    )
 
     soup = BeautifulSoup(browser.page_source, 'lxml')
     soup.prettify()
