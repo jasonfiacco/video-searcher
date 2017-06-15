@@ -9,15 +9,25 @@ from browsermobproxy import Server
 
 def extract_transcript(html_page):
     caption_tags = html_page.find_all('div', class_='caption-line-text')
-    caption_texts = [caption.text for caption in caption_tags]
-    print(" ".join(caption_texts))
+    caption_texts = [caption.text.lower() for caption in caption_tags]
+    time_tags = html_page.find_all('div', class_='caption-line-time')
+    time_texts = [time.text for time in time_tags]
+    caption_time_dictionary = dict(zip(caption_texts, time_texts))
+    return caption_time_dictionary
+
+def get_caption_times(caption_time_dictionary, caption):
+    times = []
+    for key in caption_time_dictionary:
+        if caption in key:
+            times.append(caption_time_dictionary[key])
+    return times
 
 
 if __name__ == '__main__':
     #url = input("Enter url of page: ")
 
-
-    url = 'https://www.youtube.com/watch?v=4VwElW7SbLA'
+    word = input("Enter the word you're searching for: ")
+    url = 'https://www.youtube.com/watch?v=4VwElW7SbLA&t=282s'
     browser = webdriver.Chrome('/Users/chromedriver')
     browser.get(url)
     time.sleep(2)
@@ -52,8 +62,8 @@ if __name__ == '__main__':
 
     time.sleep(2)
 
-    #browser.quit()
-
     soup = BeautifulSoup(browser.page_source, 'lxml')
     soup.prettify()
-    extract_transcript(soup)
+    caption_time_dictionary = extract_transcript(soup)
+    times = get_caption_times(caption_time_dictionary, word)
+    print(times)
