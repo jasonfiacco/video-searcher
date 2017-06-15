@@ -7,6 +7,12 @@ from bs4 import BeautifulSoup
 import time
 from browsermobproxy import Server
 
+def extract_transcript(html_page):
+    caption_tags = html_page.find_all('div', class_='caption-line-text')
+    caption_texts = [caption.text for caption in caption_tags]
+    print(" ".join(caption_texts))
+
+
 if __name__ == '__main__':
     #url = input("Enter url of page: ")
 
@@ -44,14 +50,10 @@ if __name__ == '__main__':
     actions.click(english_button2)
     actions.perform()
 
+    time.sleep(2)
 
     #browser.quit()
 
-    print(browser.page_source)
-
-
-
-
-    #print(soup.prettify())
-    #caption_lines = soup.find_all('div', class_='caption-line')
-    #print(len(caption_lines))
+    soup = BeautifulSoup(browser.page_source, 'lxml')
+    soup.prettify()
+    extract_transcript(soup)
