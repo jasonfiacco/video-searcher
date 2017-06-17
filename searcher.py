@@ -96,7 +96,9 @@ if __name__ == '__main__':
     soup.prettify()
     caption_time_dictionary = extract_transcript(soup)
     times = get_caption_times(caption_time_dictionary, word)
-    seconds = (times[0])[-2:]
-    minutes = (times[0])[:-3]
-    new_url = url + '&t={:s}m{:s}s'.format(minutes, seconds)
-    browser.get(new_url)
+    if(times):
+        seconds = (times[0])[-2:]
+        minutes = (times[0])[:-3]
+        new_url = url + '&t={:s}m{:s}s'.format(minutes, seconds)
+        browser.get(new_url)
+    
