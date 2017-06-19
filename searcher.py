@@ -26,20 +26,8 @@ def get_caption_times(caption_time_dictionary, target):
             times.append(caption_time_dictionary[key])
     return times
 
-
-if __name__ == '__main__':
-    url = input("Enter url of page: ")
-
-    word = input("Enter the word you're searching for: ")
-    #url = 'https://www.youtube.com/watch?v=4VwElW7SbLA&t=282s'
-    browser = webdriver.Chrome('/Users/chromedriver')
-    try:
-        browser.get(url)
-    except:
-        print("Fatal error: Invalid URL")
-        sys.exit(0)
-
-    time.sleep(1)
+def open_transcript():
+    time.sleep(1)  #Fix this
 
     more_button = WebDriverWait(browser, WAIT_TIME).until(
         EC.element_to_be_clickable((By.ID, 'action-panel-overflow-button'))
@@ -85,6 +73,18 @@ if __name__ == '__main__':
     actions.click(language_button)
     actions.perform()
 
+if __name__ == '__main__':
+    url = input("Enter url of page: ")
+
+    target_string = input("Enter the word you're searching for: ")
+
+    browser = webdriver.Chrome('/Users/chromedriver')
+    try:
+        browser.get(url)
+    except:
+        print("Fatal error: Invalid URL")
+        sys.exit(0)
+
     WebDriverWait(browser, WAIT_TIME).until(
         EC.text_to_be_present_in_element((By.XPATH, '//*[@id="watch-transcript-container"]/div[2]/div[1]/button/span'), 'English')
     )
@@ -95,10 +95,10 @@ if __name__ == '__main__':
     soup = BeautifulSoup(browser.page_source, 'lxml')
     soup.prettify()
     caption_time_dictionary = extract_transcript(soup)
-    times = get_caption_times(caption_time_dictionary, word)
+    times = get_caption_times(caption_time_dictionary, target_string)
     if(times):
         seconds = (times[0])[-2:]
         minutes = (times[0])[:-3]
         new_url = url + '&t={:s}m{:s}s'.format(minutes, seconds)
+        print(new_url)
         browser.get(new_url)
-    
